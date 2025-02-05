@@ -1,0 +1,29 @@
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: #ffffff;
+    border: 1px solid white;
+}
+
+.logo{
+    position: relative;
+    border: 1px solid #ffffff;
+    min-width: 250px;
+}
+
+.logo-img{
+    width: 70px;
+    height: 70px;
+    margin-right: 10px;
+}
+
+.logo-text{
+    font-size: 1.4em;
+    font-weight: 500;
+    color: #ffffff;
+    position: absolute;
+    bottom: 25%;
+    left: 20%;
+}
