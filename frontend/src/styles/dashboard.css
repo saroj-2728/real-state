@@ -48,6 +48,11 @@
     align-items: center;
     gap: 20px;
     padding: 0;
+    cursor: pointer;
+}
+
+.tabs-list li:hover {
+    color: #C2162A;
 }
 
 .search {
@@ -140,7 +145,7 @@
 
 .main-content {
     flex: 1;
-    overflow-y: hidden;
+    overflow-y: auto;
     /* height: 100vh; */
     padding: 0px 30px;
     display: flex;
@@ -312,4 +317,118 @@ h2 {
 
 .side-panel button:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sell-tab {
+    display: flex;
+    /* justify-content: center; */
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    /* overflow-y: auto; */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+form {
+    background: linear-gradient(to bottom right, #f62828, #3f0a10);
+    padding: 20px;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: row;
+    /* gap: 3%; */
+    padding: 20px;
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 700px;
+}
+
+.property-details {
+    width: 55%;
+}
+
+.property-description {
+    width: 45%;
+}
+
+.form-field {
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.form-field input,
+textarea,
+select {
+    width: 100%;
+    padding: 12px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: white;
+    color: black;
+    box-sizing: border-box;
+}
+
+.form-field input::placeholder,
+textarea::placeholder {
+    color: #757575;
+}
+
+.form-field select {
+    color: black;
+}
+
+.form-field select option:first-child {
+    color: #757575;
+}
+
+.form-field option {
+    width: 100%;
+}
+
+.submit-btn{
+    background-color: black;
+    color: white;
+    padding: 10px 90px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.confirmation-message{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding-top: 0;
+}
+
+.confirmation-message p{
+    margin: 0;
+    padding: 0;
 }

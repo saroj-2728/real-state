@@ -1,9 +1,9 @@
 import '../styles/navbar.css';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 const Navbar = () => {
 
-    const [tab, setTab] = useState("Buy");
+    // const [tab, setTab] = useState("Buy");
 
     return (
         <nav>
