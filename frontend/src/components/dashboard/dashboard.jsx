@@ -54,7 +54,7 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      <div className="container">
+      <div className="container-dash">
         {
           tab === "Buy" &&
           <div className="filters">
