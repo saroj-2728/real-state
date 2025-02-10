@@ -209,6 +209,7 @@
 .sign-in-title,
 .sign-up-title {
   color: black;
+  margin-bottom: 10px !important;
 }
 
 .sign-up input {
@@ -222,8 +223,8 @@
 .error-message {
   color: red;
   font-size: 12px !important;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .form-field {
