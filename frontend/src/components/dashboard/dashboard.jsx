@@ -1,22 +1,20 @@
 import '../../styles/dashboard.css';
 import { FaHome } from "react-icons/fa";
+import { PiBuildingApartment } from "react-icons/pi";
+import { LuLandPlot } from "react-icons/lu";
 import Buy from './buy';
 import Sell from './sell';
 import { useState } from 'react';
+import Logo from '../logo';
 
 const Dashboard = () => {
   const [tab, setTab] = useState("Buy");
+  const [filter, setFilter] = useState("")
 
   return (
     <div>
       <nav className="navbar">
-        <div className="logo">
-          <img
-            src="/images/logo.png" alt="Logo"
-            className='logo-img'
-          />
-          <p className='logo-text'>ORIGIN HOMES</p>
-        </div>
+        <Logo />
 
         <div className="tabs">
           <ul className='tabs-list'>
@@ -59,22 +57,51 @@ const Dashboard = () => {
           tab === "Buy" &&
           <div className="filters">
             <h3>Filters</h3>
-            <p>Property Type: </p>
+            <button
+              className='clear-filters'
+              onClick={() => setFilter("")}
+            >
+              Clear Filters
+            </button>
+            <p className='property-type-filter'>Property Type: </p>
             <div className='filter-options'>
-              <div className='filter-option'>
+              <div
+                onClick={() => setFilter('house')}
+                className='filter-option'
+                style={{
+                  background: filter === 'house' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                }}
+              >
                 <FaHome className='filter-icon' />
               </div>
-              <div className='filter-option'>
-                <FaHome className='filter-icon' />
+              <div
+                onClick={() => setFilter('apartment')}
+                className='filter-option'
+                style={{
+                  background: filter === 'apartment' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                }}
+              >
+                <PiBuildingApartment className='filter-icon' />
               </div>
-              <div className='filter-option'>
-                <FaHome className='filter-icon' />
+              <div
+                onClick={() => setFilter('land')}
+                className='filter-option'
+                style={{
+                  background: filter === 'land' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                }}
+              >
+                <LuLandPlot className='filter-icon' />
               </div>
             </div>
 
             <div className='location-filter'>
               <p>Location: </p>
-              <select className='location-select'>
+              <select
+                className='location-select'
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="" disabled>Location</option>
                 <option value="pokhara">Pokhara</option>
                 <option value="kathmandu">Kathmandu</option>
                 <option value="location3">Location3</option>
@@ -84,11 +111,16 @@ const Dashboard = () => {
 
             <div className='price-filter'>
               <p>Price Range: </p>
-              <select className='price-select'>
-                <option value="1">1 crore</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+              <select
+                className='price-select'
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="" disabled>Price Range</option>
+                <option value="100000">Upto 1 Lakh</option>
+                <option value="10000000">Upto 1 Crore</option>
+                <option value="100000000">Upto 10 Crore</option>
+                <option value="100000001">Above 10 Crore</option>
               </select>
             </div>
           </div>
@@ -96,7 +128,7 @@ const Dashboard = () => {
 
 
         <main className="main-content">
-          {tab === "Buy" && <Buy />}
+          {tab === "Buy" && <Buy filter={filter} />}
           {tab === "Sell" && <Sell />}
         </main>
       </div>

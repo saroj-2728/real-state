@@ -1,5 +1,4 @@
 const User = require('../model/User')
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 // Register a new user
@@ -23,15 +22,11 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Create the user
-        const newUser = await User.create({ name, email, password: hashedPassword, phone });
+       await User.create({ name, email, password: hashedPassword, phone });
 
-        // Remove the password before sending the user object
-        delete newUser.dataValues.password;
-
-        // Send the user object and the message
+        // Send the message
         res.status(201).json({
             success: true,
-            user: newUser.dataValues,
             message: 'User registered successfully'
         });
     }
@@ -71,13 +66,6 @@ const loginUser = async (req, res) => {
                 error: 'Invalid credentials'
             });
         }
-
-        // // Generate a JWT token
-        // const token = jwt.sign(
-        //     { id: user.id, username: user.username },
-        //     process.env.JWT_SECRET || 'JKHSDKJBKJSDJSDJKBKSD345345345345',
-        //     { expiresIn: '24h' }
-        // );
 
         // Remove password before sending to frontend
         delete user.dataValues.password;

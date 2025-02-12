@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../../styles/auth.css';
 import { useNavigate } from "react-router"
+import Logo from '../logo';
 
 const Auth = () => {
 
@@ -13,6 +14,7 @@ const Auth = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
   const [registerErrors, setRegisterErrors] = useState({});
   const [loginErrors, setLoginErrors] = useState({})
+  const [message, setMessage] = useState("")
 
   const [registerUser, setRegisterUser] = useState({
     name: '',
@@ -26,6 +28,14 @@ const Auth = () => {
     email: '',
     password: ''
   })
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [navigate])
+
 
   const verifyRegisterForm = () => {
     const errors = {};
@@ -153,6 +163,7 @@ const Auth = () => {
 
     try {
       setIsLoading(true);
+      console.log('Registering user:', registerUser);
 
       const response = await fetch(`${SERVER_ROOT}/api/auth/signup`, {
         method: 'POST',
@@ -172,8 +183,18 @@ const Auth = () => {
         return
       }
 
-      localStorage.setItem('user', JSON.stringify(data.user));
-      navigate('/dashboard')
+      setTimeout(() => {
+        setIsSignUp(false)
+      }, 2000);
+
+      setRegisterUser({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phone: ''
+      })
+      setMessage("Account created successfully. Please sign in to continue")
     }
     catch (error) {
       console.error(error);
@@ -189,7 +210,7 @@ const Auth = () => {
 
   return (
     <div className='auth-component'>
-
+      <Logo styles={{ position: 'absolute', top: 0, left: 0 }} />
       <div className={`container-auth ${isSignUp ? 'active' : ''}`}>
 
         {/* Sign up */}
@@ -284,6 +305,12 @@ const Auth = () => {
             {registerErrors.serverError &&
               <p className="error-message">
                 {registerErrors.serverError}
+              </p>
+            }
+
+            {message &&
+              <p className="success-message">
+                {message}
               </p>
             }
 

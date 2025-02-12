@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const sequelize = require('./database/db');
 const userRoute = require('./routes/userRoute')
+const propertyRoute = require('./routes/propertyRoute')
+const cloudinary = require('./config/cloudinaryConfig');
 
 //Creating a Server
 const app = express();
@@ -19,7 +21,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Authentication routes
 app.use('/api/auth', userRoute)
 
-// app.use('/users', userRoute);
+// Property routes
+app.use('/api/property', propertyRoute)
+
 
 
 //Running on PORT

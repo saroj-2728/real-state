@@ -227,6 +227,13 @@
   padding: 0 !important;
 }
 
+.success-message{
+  color: rgb(19, 219, 19);
+  font-size: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .form-field {
   width: 100%;
   padding: 0;
