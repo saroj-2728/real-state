@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import { IoIosClose } from "react-icons/io"
 
-const Buy = ({ filter }) => {
+const Buy = ({ filters }) => {
 
   const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT
 
@@ -51,17 +51,17 @@ const Buy = ({ filter }) => {
     }
   }
 
-  const filteredProperties = properties.filter((property) => {
-    if (!filter) return true; // If no filter text, return all properties
-    const lowerCaseFilter = filter.toLowerCase();
-    return (
-      property.propertyTitle.toLowerCase().includes(lowerCaseFilter) ||
-      property.propertyLocation.toLowerCase().includes(lowerCaseFilter) ||
-      property.propertyFeatures.toLowerCase().includes(lowerCaseFilter) ||
-      property.propertyType.toLowerCase().includes(lowerCaseFilter) ||
-      lowerCaseFilter === '100000001' ? +property.price >= 100000001 : +property.price < lowerCaseFilter
-    );
-  });
+  const filterProperties = (properties) => {
+    return properties.filter(property => {
+      const matchesType = !filters.propertyType || property.propertyType.toLowerCase() === filters.propertyType.toLowerCase();
+      const matchesLocation = !filters.location || property.propertyLocation.toLowerCase() === filters.location.toLowerCase();
+      const matchesPrice = !filters.priceRange || (+filters.priceRange === 100000001 ? +property.price >= 100000001 : +property.price < +filters.priceRange);
+
+      return matchesType && matchesLocation && matchesPrice;
+    });
+  };
+
+  const filteredProperties = filterProperties(properties);
 
   return (
     <>
@@ -73,7 +73,7 @@ const Buy = ({ filter }) => {
             </div>
             :
             filteredProperties.length > 0 ?
-            filteredProperties.map((property, index) => (
+              filteredProperties.map((property, index) => (
                 <div
                   key={index}
                   className="card"

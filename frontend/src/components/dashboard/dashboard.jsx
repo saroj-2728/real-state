@@ -1,15 +1,60 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import '../../styles/dashboard.css';
 import { FaHome } from "react-icons/fa";
 import { PiBuildingApartment } from "react-icons/pi";
 import { LuLandPlot } from "react-icons/lu";
 import Buy from './buy';
 import Sell from './sell';
-import { useState } from 'react';
 import Logo from '../logo';
 
 const Dashboard = () => {
+
+  const navigate = useNavigate()
+
   const [tab, setTab] = useState("Buy");
-  const [filter, setFilter] = useState("")
+
+  const [filters, setFilters] = useState({
+    propertyType: "",
+    location: "",
+    priceRange: ""
+  });
+
+  const handlePropertyTypeFilter = (type) => {
+    setFilters(prev => ({
+      ...prev,
+      propertyType: prev.propertyType === type ? "" : type
+    }));
+  };
+
+  const handleLocationFilter = (location) => {
+    setFilters(prev => ({
+      ...prev,
+      location
+    }));
+  };
+
+  const handlePriceFilter = (price) => {
+    setFilters(prev => ({
+      ...prev,
+      priceRange: price
+    }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      propertyType: "",
+      location: "",
+      priceRange: ""
+    });
+  };
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (!user) {
+      navigate('/auth')
+    }
+  }, [navigate])
 
   return (
     <div>
@@ -59,35 +104,35 @@ const Dashboard = () => {
             <h3>Filters</h3>
             <button
               className='clear-filters'
-              onClick={() => setFilter("")}
+              onClick={clearFilters}
             >
               Clear Filters
             </button>
             <p className='property-type-filter'>Property Type: </p>
             <div className='filter-options'>
               <div
-                onClick={() => setFilter('house')}
+                onClick={() => handlePropertyTypeFilter('house')}
                 className='filter-option'
                 style={{
-                  background: filter === 'house' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                  background: filters.propertyType === 'house' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
                 }}
               >
                 <FaHome className='filter-icon' />
               </div>
               <div
-                onClick={() => setFilter('apartment')}
+                onClick={() => handlePropertyTypeFilter('apartment')}
                 className='filter-option'
                 style={{
-                  background: filter === 'apartment' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                  background: filters.propertyType === 'apartment' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
                 }}
               >
                 <PiBuildingApartment className='filter-icon' />
               </div>
               <div
-                onClick={() => setFilter('land')}
+                onClick={() => handlePropertyTypeFilter('land')}
                 className='filter-option'
                 style={{
-                  background: filter === 'land' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
+                  background: filters.propertyType === 'land' ? 'linear-gradient(to right, #FF5959, #737373)' : ''
                 }}
               >
                 <LuLandPlot className='filter-icon' />
@@ -98,8 +143,8 @@ const Dashboard = () => {
               <p>Location: </p>
               <select
                 className='location-select'
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                value={filters.location}
+                onChange={(e) => handleLocationFilter(e.target.value)}
               >
                 <option value="" disabled>Location</option>
                 <option value="pokhara">Pokhara</option>
@@ -112,9 +157,9 @@ const Dashboard = () => {
             <div className='price-filter'>
               <p>Price Range: </p>
               <select
-                className='price-select'
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                 className='price-select'
+                 value={filters.priceRange}
+                 onChange={(e) => handlePriceFilter(e.target.value)}
               >
                 <option value="" disabled>Price Range</option>
                 <option value="100000">Upto 1 Lakh</option>
@@ -128,7 +173,7 @@ const Dashboard = () => {
 
 
         <main className="main-content">
-          {tab === "Buy" && <Buy filter={filter} />}
+          {tab === "Buy" && <Buy filters={filters} />}
           {tab === "Sell" && <Sell />}
         </main>
       </div>

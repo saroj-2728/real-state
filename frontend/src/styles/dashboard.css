@@ -209,6 +209,7 @@
 .card {
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: #ffffff;
     border-radius: 30px;
     overflow: hidden;
@@ -240,7 +241,8 @@
     padding: 25px 10px;
     color: #333;
     max-width: 35%;
-    overflow: hidden;
+    overflow-y: hidden;
+    max-height: 150px;
 }
 
 .card-content h4 {

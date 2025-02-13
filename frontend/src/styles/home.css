@@ -1,0 +1,114 @@
+  body {
+      font-family: 'Arial', sans-serif;
+      color: #ffffff;
+      background-color: #012328;
+      position: static;
+      overflow-x: auto;
+  }
+
+  .home-container {
+      margin: 0;
+      padding: 0;
+  }
+
+  .home-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      position: relative;
+      z-index: 1;
+  }
+
+  .home-logo {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff;
+      margin-left: 30px;
+      margin-top: 20px;
+  }
+
+  .home-header nav a {
+      font-family: Poppins, sans-serif;
+      font-size: 20px;
+      margin-left: 100px;
+      margin-right: 100px;
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: 400;
+  }
+
+  .home-header nav {
+      position: relative;
+      top: 30px;
+  }
+
+  .home-logo1 {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      width: 120px;
+      z-index: 3;
+  }
+
+  .home-logo1 img {
+      width: 50%;
+      height: auto;
+      object-fit: contain;
+  }
+
+  .home-hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 50px 20px;
+      position: relative;
+      height: 90vh;
+      overflow: hidden;
+  }
+
+  .home-hero .home-content {
+      z-index: 2;
+      color: #ffffff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+
+  .home-hero h1 {
+      font-family: "Poppins", sans-serif;
+      font-size: 40px;
+      font-weight: 600;
+      max-width: 600px;
+      margin-left: -520px;
+      margin-top: 70px;
+      text-align: left;
+  }
+
+  .home-hero p {
+      font-family: "poppins", sans-serif;
+      font-size: 15px;
+      max-width: 600px;
+      font-weight: 200;
+      margin-left: -520px;
+      margin-top: 30px;
+      text-align: left;
+  }
+
+  .home-hero button {
+      background: linear-gradient(90deg, #df1616, #605c55);
+      color: #ffffff;
+      border: none;
+      padding: 12px 70px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 2;
+      position: relative;
+      margin-left: -830px;
+      margin-top: 60px;
+  }
+
+  .home-hero button:hover {
+      background: linear-gradient(90deg, #605c55, #df1616);
+  }
