@@ -121,7 +121,10 @@ const getPropertyBySeller = async (req, res) => {
         }
 
         // Send the property object
-        res.status(200).json(property);
+        res.status(200).json({
+            success: true,
+            property
+        });
     }
     catch (error) {
         console.error(error);

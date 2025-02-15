@@ -60,7 +60,7 @@ const Dashboard = () => {
     <div>
       <nav className="navbar">
         <Logo />
-
+        
         <div className="tabs">
           <ul className='tabs-list'>
             <li

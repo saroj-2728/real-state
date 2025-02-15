@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react"
 import { IoIosClose } from "react-icons/io"
+import Popup from '../Popup';
+import PropertyCard from "../PropertyCard";
+import { getFormattedPrice } from "../../utils/getFormattedPrice";
 
 const Buy = ({ filters }) => {
 
@@ -10,6 +13,8 @@ const Buy = ({ filters }) => {
   const [properties, setProperties] = useState([])
   const [selectedProperty, setSelectedProperty] = useState({})
   const [isFetching, setIsFetching] = useState(true)
+  const [isBuying, setIsBuying] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
 
   useEffect(() => {
     // Fetch all unsold properties
@@ -18,7 +23,6 @@ const Buy = ({ filters }) => {
         const response = await fetch(`${SERVER_ROOT}/api/property/unsold`)
         const data = await response.json()
         setProperties(data)
-        console.log(data);
       }
       catch (error) {
         console.log(error)
@@ -40,17 +44,6 @@ const Buy = ({ filters }) => {
     setViewSidePanel(true)
   }
 
-  const getFormattedPrice = (price) => {
-    switch (true) {
-      case price < 100000:
-        return `${price}`;
-      case price >= 100000 && price < 10000000:
-        return `${(price / 100000).toFixed(2)} Lakh`;
-      case price >= 10000000:
-        return `${(price / 10000000).toFixed(2)} Crore`;
-    }
-  }
-
   const filterProperties = (properties) => {
     return properties.filter(property => {
       const matchesType = !filters.propertyType || property.propertyType.toLowerCase() === filters.propertyType.toLowerCase();
@@ -63,8 +56,42 @@ const Buy = ({ filters }) => {
 
   const filteredProperties = filterProperties(properties);
 
+  const handlePropertyBuy = async (propertyId) => {
+    setIsBuying(true)
+
+    try {
+      const response = await fetch(`${SERVER_ROOT}/api/property/buy/${propertyId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const data = await response.json()
+
+      if (data.success) {
+        setProperties(properties.filter(property => property.id !== propertyId))
+        setViewSidePanel(false)
+        setShowPopup(true)
+        setTimeout(() => {
+          setShowPopup(false)
+        }, 5000);
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setIsBuying(false)
+    }
+  }
+
   return (
     <>
+      <Popup
+        message='Property bought successfully!'
+        showPopup={showPopup}
+        setShowPopup={setShowPopup}
+      />
       <div className='card-container'>
         {
           isFetching ?
@@ -74,21 +101,11 @@ const Buy = ({ filters }) => {
             :
             filteredProperties.length > 0 ?
               filteredProperties.map((property, index) => (
-                <div
+                <PropertyCard
                   key={index}
-                  className="card"
-                  onClick={() => handleViewPanel(property.id)}
-                >
-                  <img src={property.propertyImage} alt="Villa" />
-                  <div className="card-content">
-                    <p className="content-price">
-                      Rs. {getFormattedPrice(property.price)}
-                    </p>
-                    <h4>{property.propertyTitle}, {property.propertyLocation}</h4>
-                    <p className="buy-property-features">{property.propertyFeatures}</p>
-                    <p className="buy-property-description">{property.description}</p>
-                  </div>
-                </div>
+                  property={property}
+                  onClick={handleViewPanel}
+                />
               ))
               :
               <div>
@@ -101,7 +118,9 @@ const Buy = ({ filters }) => {
         <div className="side-panel">
           <button
             type='button'
+            disabled={isBuying}
             onClick={handleClick}
+            className="buy-close-button"
           >
             <IoIosClose className='close-button' />
           </button>
@@ -122,6 +141,16 @@ const Buy = ({ filters }) => {
             <div className="side-panel-contact">
               <p>Owner: {selectedProperty.ownerName}</p>
               <p>Contact: {selectedProperty.phoneNumber}</p>
+            </div>
+            <div className="buy-button-container">
+              <button
+                className="buy-button"
+                disabled={isBuying}
+                type="button"
+                onClick={() => handlePropertyBuy(selectedProperty.id)}
+              >
+                {isBuying ? 'Buying...' : 'Buy'}
+              </button>
             </div>
           </div>
         </div>
