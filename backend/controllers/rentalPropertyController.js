@@ -1,7 +1,8 @@
-const Property = require('../model/Property')
+// const Property = require('../model/Property');
+const RentalProperty = require('../model/Rentalproperty');
 const cloudinary = require('cloudinary').v2;
 
-const sellProperty = async (req, res) => {
+const rentOUtProperty = async (req, res) => {
 
     const requiredFields = { ...req.body };
     const propertyImage = req.file;
@@ -49,54 +50,55 @@ const sellProperty = async (req, res) => {
         // Add the property image URL to the required fields
         requiredFields.propertyImage = uploadedImage.secure_url;
 
-        // Create the property
-        await Property.create(requiredFields);
+        // Create the rental property
+        await RentalProperty.create(requiredFields);
 
         // Send the property object and the message
         res.status(201).json({
             success: true,
-            message: 'Property listed successfully'
+            message: 'Property listed for rent successfully'
         });
     }
+
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to list property' });
+        res.status(500).json({ error: 'Failed to list the rented property' });
     }
 }
 
-const buyProperty = async (req, res) => {
-    const { id } = req.params;
+const rentProperty = async (req, res) => {
+    const { Rid } = req.params;
 
     try {
         // Find the property by id
-        const property = await Property.findOne({
-            where: { id }
+        const property = await RentalProperty.findOne({
+            where: { id: Rid }
         });
-        if (!property) {
+        if (!rentProperty) {
             return res.status(404).json({ error: 'Property not found' });
         }
 
         // Update the property status
-        property.status = 'sold';
+        property.status = 'rented';
         await property.save();
 
         // Send the property object and the message
         res.status(200).json({
             success: true,
-            message: 'Property bought successfully'
+            message: 'Property rented successfully'
         });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to buy property' });
+        res.status(500).json({ error: 'Failed to rent property' });
     }
 }
 
-const getAllOnSaleProperties = async (req, res) => {
+const getAllrentalProperties = async (req, res) => {
     try {
-        // Find all properties which aren't sold
-        const properties = await Property.findAll({
-            where: { status: 'onSale' }
+        // Find all properties which aren't rented
+        const properties = await RentalProperty.findAll({
+            where: { status: 'onRent' }
         });
 
         // Send the properties array
@@ -108,12 +110,13 @@ const getAllOnSaleProperties = async (req, res) => {
     }
 }
 
-const getPropertyBySeller = async (req, res) => {
+
+const getrentalPropertyBySeller = async (req, res) => {
     const { sellerId } = req.params;
 
     try {
         // Find the property by id
-        const property = await Property.findAll({
+        const property = await RentalProperty.findAll({
             where: { sellerId }
         });
         if (!property) {
@@ -132,13 +135,12 @@ const getPropertyBySeller = async (req, res) => {
     }
 }
 
-
-const deleteProperty = async (req, res) => {
+const deleteRentalProperty = async (req, res) => {
     const { id } = req.params;
 
     try {
         // Find the property by id
-        const property = await Property.findOne({
+        const property = await RentalProperty.findOne({
             where: { id }
         });
 
@@ -178,10 +180,10 @@ const deleteProperty = async (req, res) => {
 };
 
 
-module.exports = {
-    sellProperty,
-    buyProperty,
-    getAllOnSaleProperties,
-    getPropertyBySeller,
-    deleteProperty
-}
+module.exports = { 
+    rentOUtProperty, 
+    rentProperty, 
+    getAllrentalProperties, 
+    getrentalPropertyBySeller,
+    deleteRentalProperty 
+};

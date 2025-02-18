@@ -5,7 +5,7 @@ import Popup from '../Popup';
 import PropertyCard from "../PropertyCard";
 import { getFormattedPrice } from "../../utils/getFormattedPrice";
 
-const Buy = ({ filters }) => {
+const Buy = ({ filters, isBuyComponent = true }) => {
 
   const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT
 
@@ -20,7 +20,7 @@ const Buy = ({ filters }) => {
     // Fetch all unsold properties
     const fetchProperties = async () => {
       try {
-        const response = await fetch(`${SERVER_ROOT}/api/property/unsold`)
+        const response = await fetch(`${SERVER_ROOT}/api/${isBuyComponent ? "property" : "rentalProperty"}/unsold`)
         const data = await response.json()
         setProperties(data)
       }
@@ -32,7 +32,7 @@ const Buy = ({ filters }) => {
       }
     }
     fetchProperties()
-  }, [SERVER_ROOT])
+  }, [SERVER_ROOT, isBuyComponent])
 
   const handleClick = () => {
     setViewSidePanel(false)
@@ -60,7 +60,7 @@ const Buy = ({ filters }) => {
     setIsBuying(true)
 
     try {
-      const response = await fetch(`${SERVER_ROOT}/api/property/buy/${propertyId}`, {
+      const response = await fetch(`${SERVER_ROOT}/api/${isBuyComponent ? "property" : "rentalProperty"}/buy/${propertyId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ const Buy = ({ filters }) => {
   return (
     <>
       <Popup
-        message='Property bought successfully!'
+        message={`Property ${isBuyComponent ? "bought" : "rented"} successfully!`}
         showPopup={showPopup}
         setShowPopup={setShowPopup}
       />
@@ -104,6 +104,7 @@ const Buy = ({ filters }) => {
                 <PropertyCard
                   key={index}
                   property={property}
+                  showStatus={false}
                   onClick={handleViewPanel}
                 />
               ))
@@ -145,11 +146,11 @@ const Buy = ({ filters }) => {
             <div className="buy-button-container">
               <button
                 className="buy-button"
-                disabled={isBuying}
+                disabled
                 type="button"
                 onClick={() => handlePropertyBuy(selectedProperty.id)}
               >
-                {isBuying ? 'Buying...' : 'Buy'}
+                {isBuyComponent ? (isBuying ? 'Buying...' : 'Buy') : (isBuying ? 'Processing' : "Rent")}
               </button>
             </div>
           </div>

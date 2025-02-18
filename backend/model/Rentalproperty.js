@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../database/db');
 
-const Property = sequelize.define('Properties', {
+const RentalProperty = sequelize.define('RentalProperties', {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -55,10 +55,10 @@ const Property = sequelize.define('Properties', {
     },
     status: {
         type: DataTypes.ENUM,
-        values: ['onSale', 'sold'],
-        defaultValue: 'onSale',
+        values: ['onRent','rented'],
+        defaultValue: 'onRent',
         allowNull: false
     }
 });
 
-module.exports = Property;
+module.exports = RentalProperty;

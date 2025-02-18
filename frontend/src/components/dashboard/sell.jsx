@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState, useRef } from 'react'
-import { Link } from 'react-router'
 import MyListings from '../my-listings/MyListings';
 
-const Sell = () => {
+const Sell = ({ isSellComponent = true}) => {
 
     const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT;
 
@@ -126,7 +126,7 @@ const Sell = () => {
         try {
             setIsLoading(true)
 
-            const response = await fetch(`${SERVER_ROOT}/api/property/sell`, {
+            const response = await fetch(`${SERVER_ROOT}/api/${isSellComponent ? "property" : "rentalProperty"}/${isSellComponent ? "sell" : "rentout"}`, {
                 method: 'POST',
                 body: formData
             })
@@ -349,7 +349,7 @@ const Sell = () => {
             }
 
             {showListings &&
-                <MyListings />
+                <MyListings isSellListings={isSellComponent? true: false} />
             }
         </div>
     )

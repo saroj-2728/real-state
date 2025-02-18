@@ -6,6 +6,7 @@ const sequelize = require('./database/db');
 const userRoute = require('./routes/userRoute')
 const propertyRoute = require('./routes/propertyRoute')
 const cloudinary = require('./config/cloudinaryConfig');
+const rentalRoute = require('./routes/rentalPropertyRoute');
 
 //Creating a Server
 const app = express();
@@ -24,6 +25,8 @@ app.use('/api/auth', userRoute)
 // Property routes
 app.use('/api/property', propertyRoute)
 
+//rentalProperty routes
+app.use('/api/rentalProperty',rentalRoute)
 
 
 //Running on PORT

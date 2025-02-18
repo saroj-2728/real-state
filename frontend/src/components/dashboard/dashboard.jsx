@@ -99,7 +99,7 @@ const Dashboard = () => {
 
       <div className="container-dash">
         {
-          tab === "Buy" &&
+          (tab === "Buy" || tab === "Rent") &&
           <div className="filters">
             <h3>Filters</h3>
             <button
@@ -173,8 +173,10 @@ const Dashboard = () => {
 
 
         <main className="main-content">
-          {tab === "Buy" && <Buy filters={filters} />}
-          {tab === "Sell" && <Sell />}
+          {tab === "Buy" && <Buy filters={filters} isBuyComponent={true} />}
+          {tab === "Sell" && <Sell isSellComponent={true} />}
+          {tab === "Rent" && <Buy filters={filters} isBuyComponent={false} />}
+          {tab === "Rent Out" && <Sell isSellComponent={false} />}
         </main>
       </div>
     </div>
