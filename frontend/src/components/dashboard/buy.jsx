@@ -5,7 +5,7 @@ import Popup from '../Popup';
 import PropertyCard from "../PropertyCard";
 import { getFormattedPrice } from "../../utils/getFormattedPrice";
 
-const Buy = ({ filters, isBuyComponent = true }) => {
+const Buy = ({ filters, isBuyComponent = true, searchQuery = "" }) => {
 
   const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT
 
@@ -46,11 +46,27 @@ const Buy = ({ filters, isBuyComponent = true }) => {
 
   const filterProperties = (properties) => {
     return properties.filter(property => {
-      const matchesType = !filters.propertyType || property.propertyType.toLowerCase() === filters.propertyType.toLowerCase();
-      const matchesLocation = !filters.location || property.propertyLocation.toLowerCase() === filters.location.toLowerCase();
-      const matchesPrice = !filters.priceRange || (+filters.priceRange === 100000001 ? +property.price >= 100000001 : +property.price < +filters.priceRange);
+      
+      const matchesType = !filters.propertyType ||
+        property.propertyType.toLowerCase() === filters.propertyType.toLowerCase();
 
-      return matchesType && matchesLocation && matchesPrice;
+      const matchesLocation = !filters.location ||
+        property.propertyLocation.toLowerCase() === filters.location.toLowerCase();
+
+      const matchesPrice = !filters.priceRange ||
+        (+filters.priceRange === 100000001 ?
+          +property.price >= 100000001 :
+          +property.price < +filters.priceRange);
+
+      const searchTerms = searchQuery.toLowerCase().trim().split(' ');
+      const matchesSearch = searchQuery === '' || searchTerms.every(term =>
+        property.propertyTitle.toLowerCase().includes(term) ||
+        property.propertyLocation.toLowerCase().includes(term) ||
+        property.propertyType.toLowerCase().includes(term) ||
+        property.propertyFeatures.toLowerCase().includes(term)
+      );
+
+      return matchesType && matchesLocation && matchesPrice && matchesSearch;
     });
   };
 

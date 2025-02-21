@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import MyListings from '../my-listings/MyListings';
+import { validateForm } from '../../utils/validatePropertyForm';
 
-const Sell = ({ isSellComponent = true}) => {
+const Sell = ({ isSellComponent = true }) => {
 
     const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT;
 
@@ -21,6 +22,7 @@ const Sell = ({ isSellComponent = true}) => {
     const [propertyImage, setPropertyImage] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
     const [showListings, setShowListings] = useState(false)
+    const [isUpdating, setIsUpdating] = useState(false)
 
     const [message, setMessage] = useState("")
     const [errors, setErrors] = useState({})
@@ -28,6 +30,12 @@ const Sell = ({ isSellComponent = true}) => {
 
     const fileInputRef = useRef(null)
     const MAX_FILE_SIZE = 1024 * 1024 * 5
+
+    useEffect(() => {
+        if (isUpdating) {
+            setShowListings(false)
+        }
+    }, [isUpdating])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -46,66 +54,11 @@ const Sell = ({ isSellComponent = true}) => {
     };
 
 
-    const validateForm = () => {
-        const errors = {};
-
-        if (!propertyDetails.ownerName.trim()) {
-            errors.ownerName = "Owner name is required";
-        }
-
-        if (!propertyDetails.propertyLocation) {
-            errors.propertyLocation = "Property location is required";
-        }
-
-        if (!propertyDetails.propertyTitle.trim()) {
-            errors.propertyTitle = "Property title is required";
-        }
-
-        if (!propertyDetails.phoneNumber.trim()) {
-            errors.phoneNumber = "Phone number is required";
-        } else if (!/^\d{10}$/.test(propertyDetails.phoneNumber)) {
-            errors.phoneNumber = "Invalid phone number format";
-        }
-
-        if (!propertyDetails.price.trim()) {
-            errors.price = "Price is required";
-        } else if (isNaN(propertyDetails.price)) {
-            errors.price = "Price must be a number";
-        }
-
-        if (!propertyDetails.propertyType) {
-            errors.propertyType = "Property type is required";
-        }
-
-        if (!propertyDetails.description.trim()) {
-            errors.description = "Description is required";
-        }
-
-        if (!propertyDetails.propertyFeatures.trim()) {
-            errors.propertyFeatures = "Property feature is required";
-        }
-
-        if (!propertyImage) {
-            errors.propertyImage = "Property image is required";
-        } else {
-            const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-            if (!allowedTypes.includes(propertyImage.type)) {
-                errors.propertyImage = "Only JPG, JPEG, or PNG images are allowed";
-            }
-
-            if (propertyImage.size > MAX_FILE_SIZE) {
-                errors.propertyImage = "Image size must be 5MB or less";
-            }
-        }
-
-        return Object.keys(errors).length === 0 ? null : errors;
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         setErrors({})
 
-        const errors = validateForm();
+        const errors = validateForm(propertyDetails, propertyImage, MAX_FILE_SIZE);
         setErrors(errors || {});
 
         if (errors) {
@@ -120,17 +73,23 @@ const Sell = ({ isSellComponent = true}) => {
         });
         // Append the image
         formData.append("propertyImage", propertyImage);
-        formData.append("sellerId", user.id); // Append user ID
-
+        if (!isUpdating) formData.append("sellerId", user.id); // Append user ID if it isn't already, that is when updating
 
         try {
             setIsLoading(true)
-
-            const response = await fetch(`${SERVER_ROOT}/api/${isSellComponent ? "property" : "rentalProperty"}/${isSellComponent ? "sell" : "rentout"}`, {
-                method: 'POST',
-                body: formData
-            })
-
+            let response;
+            if (isUpdating) {
+                response = await fetch(`${SERVER_ROOT}/api/${isSellComponent ? "property" : "rentalProperty"}/update/${propertyDetails.id}`, {
+                    method: 'PUT',
+                    body: formData
+                })
+            }
+            else {
+                response = await fetch(`${SERVER_ROOT}/api/${isSellComponent ? "property/sell" : "rentalProperty/rentout"}`, {
+                    method: 'POST',
+                    body: formData
+                })
+            }
             const data = await response.json()
 
             if (!data.success) {
@@ -141,7 +100,7 @@ const Sell = ({ isSellComponent = true}) => {
                 return
             }
 
-            setMessage("Property posted successfully")
+            setMessage(isUpdating ? "Property updated successfully" : "Property posted successfully")
 
             setTimeout(() => {
                 setMessage("")
@@ -157,6 +116,7 @@ const Sell = ({ isSellComponent = true}) => {
                 })
                 setImagePreview(null)
                 setPropertyImage(null)
+                setIsUpdating(false)
             }, 2000);
         }
         catch (error) {
@@ -185,7 +145,10 @@ const Sell = ({ isSellComponent = true}) => {
                         <h1>Property Details</h1>
                         <button
                             className='go-to-listings'
-                            onClick={() => setShowListings(true)}
+                            onClick={() => {
+                                setShowListings(true);
+                                setIsUpdating(false)
+                            }}
                         >
                             My Listings
                         </button>
@@ -341,15 +304,20 @@ const Sell = ({ isSellComponent = true}) => {
                                 disabled={isLoading}
                                 className='submit-btn'
                             >
-                                {isLoading ? "Posting..." : "Post the property"}
+                                {isUpdating ? (isLoading ? "Updating..." : "Update the property") : (isLoading ? "Posting..." : "Post the property")}
                             </button>
                         </div>
                     </form>
                 </>
             }
 
-            {showListings &&
-                <MyListings isSellListings={isSellComponent? true: false} />
+            {(showListings && !isUpdating) &&
+                <MyListings
+                    isSellListings={isSellComponent}
+                    setIsUpdating={setIsUpdating}
+                    setShowListings={setShowListings}
+                    setPropertyDetails={setPropertyDetails}
+                />
             }
         </div>
     )

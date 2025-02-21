@@ -19,6 +19,7 @@ const Dashboard = () => {
     location: "",
     priceRange: ""
   });
+  const [query, setQuery] = useState("")
 
   const handlePropertyTypeFilter = (type) => {
     setFilters(prev => ({
@@ -60,7 +61,7 @@ const Dashboard = () => {
     <div>
       <nav className="navbar">
         <Logo />
-        
+
         <div className="tabs">
           <ul className='tabs-list'>
             <li
@@ -89,12 +90,19 @@ const Dashboard = () => {
             </li>
           </ul>
           <div className='search'>
-            <input className='searchBar' type="text" placeholder="Search..." />
+            <input
+              className='searchBar'
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              type="text"
+              placeholder="Search..."
+            />
           </div>
         </div>
-        <div className='heart'>
-          <img className='heart-img' src="/images/heart.png" alt="" />
-        </div>
+        <div
+          className='heart'
+          style={{ visibility: "hidden" }}
+        />
       </nav>
 
       <div className="container-dash">
@@ -157,9 +165,9 @@ const Dashboard = () => {
             <div className='price-filter'>
               <p>Price Range: </p>
               <select
-                 className='price-select'
-                 value={filters.priceRange}
-                 onChange={(e) => handlePriceFilter(e.target.value)}
+                className='price-select'
+                value={filters.priceRange}
+                onChange={(e) => handlePriceFilter(e.target.value)}
               >
                 <option value="" disabled>Price Range</option>
                 <option value="100000">Upto 1 Lakh</option>
@@ -173,9 +181,9 @@ const Dashboard = () => {
 
 
         <main className="main-content">
-          {tab === "Buy" && <Buy filters={filters} isBuyComponent={true} />}
+          {tab === "Buy" && <Buy filters={filters} isBuyComponent={true} searchQuery={query} />}
           {tab === "Sell" && <Sell isSellComponent={true} />}
-          {tab === "Rent" && <Buy filters={filters} isBuyComponent={false} />}
+          {tab === "Rent" && <Buy filters={filters} isBuyComponent={false} searchQuery={query} />}
           {tab === "Rent Out" && <Sell isSellComponent={false} />}
         </main>
       </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import '../../styles/my-listings.css'
 import PropertyCard from "../PropertyCard"
 
-const MyListings = ({isSellListings = true}) => {
+const MyListings = ({isSellListings = true, setIsUpdating, setShowListings, setPropertyDetails}) => {
 
     const SERVER_ROOT = import.meta.env.VITE_SERVER_ROOT
     const user = JSON.parse(localStorage.getItem('user'))
@@ -38,6 +38,9 @@ const MyListings = ({isSellListings = true}) => {
 
     const handleEdit = (id) => {
         console.log('Edit property:', id);
+        setIsUpdating(true);
+        setShowListings(false);
+        setPropertyDetails(properties.find(property => property.id === id));
     }
 
     const handleDelete = async (id) => {

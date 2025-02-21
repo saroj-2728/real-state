@@ -11,5 +11,6 @@ router.put('/buy/:id', propertyController.buyProperty);
 router.get('/unsold', propertyController.getAllOnSaleProperties);
 router.get('/seller/:sellerId', propertyController.getPropertyBySeller);
 router.delete('/delete/:id', propertyController.deleteProperty);
+router.put('/update/:id', upload.single('propertyImage'), propertyController.updateProperty);
 
 module.exports = router;
